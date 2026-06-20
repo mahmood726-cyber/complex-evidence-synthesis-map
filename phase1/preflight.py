@@ -10,7 +10,6 @@ the verdict-schema rule that a SKIP is not a silent PASS.
 
 from __future__ import annotations
 
-import shutil
 import subprocess
 import sys
 
@@ -61,18 +60,19 @@ def check_conformal_ma():
 
 
 def check_r_netmeta():
-    if shutil.which("Rscript") is None:
-        return False, "Rscript not on PATH -> netmeta parity SKIP (run is UNVERIFIED, validate via known-truth)"
+    rscript = bootstrap.find_rscript()
+    if rscript is None:
+        return False, "Rscript not found (PATH or Program Files) -> parity SKIP (run UNVERIFIED, validate via known-truth)"
     try:
         r = subprocess.run(
-            ["Rscript", "-e", "suppressMessages(library(netmeta)); cat('ok')"],
+            [rscript, "-e", "suppressMessages(library(metafor)); cat('ok')"],
             capture_output=True, text=True, timeout=60,
         )
     except Exception as exc:  # noqa: BLE001
         return False, f"Rscript present but failed: {exc}"
     if "ok" in (r.stdout or ""):
-        return True, "Rscript + netmeta available"
-    return False, f"netmeta not installed: {(r.stderr or '').strip()[:120]} -> parity SKIP"
+        return True, f"Rscript + metafor available ({rscript})"
+    return False, f"metafor not installed: {(r.stderr or '').strip()[:120]} -> parity SKIP"
 
 
 def run() -> dict:

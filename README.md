@@ -17,8 +17,16 @@ specification curve.
   - `phase1/verdict.py` — combined capsule-ready verdict; version-controlled baseline at `tests/fixtures/verdict_baseline.json`.
 - Reuses `advanced-nma-pooling`, `conformal-ma`, `aact-cockpit`, e156 assurance standard. Run: `python -m phase1.preflight`, `python -m phase1.verdict`, `python -m pytest`.
 
-### First worked result (aact NMA-MACE-in-T2D, k=10) — *UNVERIFIED* (netmeta SKIP on this box)
-Honest, non-hyped finding: on real-data LOO all three PIs cover 0.90 (< nominal 0.95) — conformal earns nothing over standard/HKSJ; under a correctly-specified normal model conformal is conservative (0.967) while standard/HKSJ under-cover (~0.92). Self-audit grade: **Bronze / Very Low** (high heterogeneity, CIs cross null, RoB & reporting unassessed). No free lunch.
+- **Phase 2 — multiverse layer:** implemented (`phase2/`):
+  - `specs.py` — NMA forking-path grid (FE/DL/PM/REML τ² × Wald/HKSJ CI), reusing `spec_collapse.engine` pooling primitives verbatim.
+  - `multiverse.py` — per-contrast aggregation with `weighted_likelihood` (primary; **never IV-RE — C2**) vs `naive_ivre_pool` (the labelled cardinal sin) for contrast; treatment hierarchy under every spec.
+  - `ranking.py` — SUCRA + probability-of-best + **POTH** (Wigle 2025), gating any "best treatment" claim on POTH ≥ 0.5 (**C5**).
+  - **B1 parity CLOSED:** `validate_r.py` + `external/r/parity.R` — pooling backbone matches `metafor` to **7e-07** (R 4.6.0).
+
+### Worked results (aact NMA-MACE-in-T2D, k=10) — now **VERIFIED** (metafor parity passes)
+- **Coverage (P0-B):** real-data LOO all three PIs cover 0.90 (< nominal 0.95) — conformal earns nothing over standard/HKSJ; known-truth sim shows conformal conservative (0.967) vs standard/HKSJ under-covering (~0.92). No free lunch.
+- **Self-audit (P0-A):** **Bronze / Very Low** (I²=73%, CIs cross null, RoB & reporting unassessed).
+- **Multiverse (Phase 2):** naive IV-RE pooling calls GLP-1 & SGLT2 vs placebo *"robust"*; weighted-likelihood (correct) calls both *"fragile"* — IV-RE narrows the CI ~6× and manufactures significance. DPP-4 tops the order in all 8 specs, yet aggregated **POTH = 0.21 < 0.5 → hierarchy non-informative**: leader-stable but the full ranking is untrustworthy. Don't claim a "best" treatment.
 
 ## The three anchor strands (reused, not rebuilt)
 1. **Self-auditing / TruthCert** — internal-consistency checks, signed capsules (e156 assurance standard).

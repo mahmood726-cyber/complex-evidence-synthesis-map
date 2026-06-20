@@ -1,0 +1,33 @@
+{
+  "n_network_specs": 8,
+  "per_contrast_verdicts": {
+    "DPP-4 inhibitor": {
+      "wl": "fragile",
+      "ivre": "fragile",
+      "wl_wider": true
+    },
+    "GLP-1 RA": {
+      "wl": "fragile",
+      "ivre": "robust",
+      "wl_wider": true
+    },
+    "SGLT2 inhibitor": {
+      "wl": "fragile",
+      "ivre": "robust",
+      "wl_wider": true
+    }
+  },
+  "best_treatment_distribution": {
+    "DPP-4 inhibitor": 8
+  },
+  "aggregated_hierarchy": {
+    "order": [
+      "DPP-4 inhibitor",
+      "placebo",
+      "GLP-1 RA",
+      "SGLT2 inhibitor"
+    ],
+    "poth": 0.2097,
+    "informative": false
+  }
+}

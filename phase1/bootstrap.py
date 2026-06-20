@@ -54,3 +54,30 @@ def add_conformal_ma() -> Path | None:
     if str(repo) not in sys.path:
         sys.path.insert(0, str(repo))
     return repo
+
+
+def add_spec_collapse() -> Path | None:
+    """Add spec-collapse-atlas (the weighted-likelihood multiverse aggregator)."""
+    repo = find_repo("spec-collapse-atlas", "SPEC_COLLAPSE_DIR")
+    if repo is None:
+        return None
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    return repo
+
+
+def find_rscript() -> str | None:
+    """Locate Rscript: PATH first, then a Program Files install (Windows)."""
+    from shutil import which
+    found = which("Rscript")
+    if found:
+        return found
+    env = os.environ.get("RSCRIPT")
+    if env and Path(env).exists():
+        return env
+    base = Path(r"C:\Program Files\R")
+    if base.exists():
+        cands = sorted(base.glob("R-*/bin/Rscript.exe"), reverse=True)
+        if cands:
+            return str(cands[0])
+    return None
