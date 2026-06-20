@@ -86,10 +86,17 @@ def recommend_pi(coverage: dict, intervals: dict, nominal: float = NOMINAL) -> d
         return {"recommended": chosen, "meets_nominal": True,
                 "empirical_coverage": coverage[chosen],
                 "coverage_table": coverage}
-    # none reach nominal -> honest under-coverage report
+    # none reach nominal -> honest under-coverage report. Among the best-covering
+    # methods, pick the NARROWEST (same insufficient coverage, more efficient) --
+    # never just the widest by accident.
     valid = {m: c for m, c in coverage.items()
              if c is not None and not (isinstance(c, float) and math.isnan(c))}
-    closest = max(valid, key=valid.get) if valid else None
+    if valid:
+        best_cov = max(valid.values())
+        tied = [m for m, c in valid.items() if abs(c - best_cov) < 1e-9]
+        closest = min(tied, key=lambda m: widths.get(m, math.inf))
+    else:
+        closest = None
     return {"recommended": closest, "meets_nominal": False,
             "empirical_coverage": valid.get(closest),
             "note": "no PI method reached nominal coverage at this k -- "

@@ -1,0 +1,35 @@
+{
+  "dataset": "nma-major-adverse-cardiovascular-events-in-type-2-diabetes",
+  "estimand": "hazard ratio for major adverse cardiovascular events versus placebo",
+  "k": 10,
+  "effect_logHR_active_vs_placebo": 0.069586,
+  "tau2": 0.010463,
+  "prediction_interval": {
+    "method": "hksj",
+    "meets_nominal": false,
+    "logHR": [
+      -0.177918,
+      0.317089
+    ]
+  },
+  "loo_coverage": {
+    "conformal": 0.9,
+    "standard": 0.9,
+    "hksj": 0.9
+  },
+  "known_truth_coverage": {
+    "conformal": 0.967,
+    "standard": 0.923,
+    "hksj": 0.92
+  },
+  "cinema6_levels": {
+    "heterogeneity": "major_concern",
+    "imprecision": "some_concern",
+    "incoherence": "some_concern",
+    "indirectness": "some_concern",
+    "within_study_bias": "unassessed",
+    "reporting_bias": "unassessed"
+  },
+  "certainty": "Very Low",
+  "badge": "Bronze"
+}
