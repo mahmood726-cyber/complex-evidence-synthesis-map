@@ -1,0 +1,20 @@
+# Local progress / state (may contain local paths)
+PROGRESS.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Agent configs
+.claude/
+.gemini/
+.codex/
