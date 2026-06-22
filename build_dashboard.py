@@ -60,6 +60,26 @@ def _multiverse_rows(m) -> str:
     return "\n".join(out)
 
 
+def _estimator_section(v) -> str:
+    est = v.get("nma_estimator") or {}
+    if not est.get("available"):
+        return ""
+    rows = []
+    for t, d in est["by_treatment"].items():
+        rows.append(
+            f"<tr><td>{_esc(t)}</td><td>{d['effect']:+.3f}</td>"
+            f"<td>{d['se_model']:.4f}</td><td>{d['se_sandwich']:.4f}</td>"
+            f"<td>{d['se_ratio_sandwich_over_model']:.2f}</td></tr>")
+    return (
+        "<h2>Estimator robustness (B2): model vs sandwich variance</h2>"
+        "<table><tr><th>treatment</th><th>effect</th><th>SE (model)</th>"
+        "<th>SE (sandwich)</th><th>ratio</th></tr>" + "".join(rows) + "</table>"
+        "<p class='sub'>core_ad NMA (shared-&tau; REML) effects reproduce the independent "
+        "aact engine. The Lu/Ades composite-likelihood sandwich changes only the variance; "
+        "ratios far from 1 (and the near-zero DPP-4 value, informed by just two studies) are "
+        "the documented small-cluster under-coverage of robust variances &mdash; reported, not trusted blindly.</p>")
+
+
 def build() -> str:
     net = data_io.load_network()
     v = verdict.assemble(net)
@@ -160,6 +180,8 @@ def build() -> str:
       never &ldquo;no concern&rdquo;. Overall: <strong>{_esc(badge)} / {_esc(v['certainty'])}</strong>.</p>
     </div>
   </div>
+
+  {_estimator_section(v)}
 
   <h2>Specification multiverse ({m['n_network_specs']} specs: FE/DL/PM/REML &times; Wald/HKSJ)</h2>
   <table>

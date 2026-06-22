@@ -14,6 +14,22 @@ from pathlib import Path
 from phase1 import coverage, data_io, selfaudit
 
 
+def _nma_estimator_block(net: dict) -> dict:
+    """B2: core_ad NMA effects with model vs sandwich (robust) SE. Optional --
+    returns {} if advanced-nma-pooling is unavailable (degrade, don't fail)."""
+    try:
+        from phase2 import core_nma
+        rep = core_nma.compare(net)
+    except Exception as exc:  # noqa: BLE001
+        return {"available": False, "reason": str(exc)[:120]}
+    return {
+        "available": True,
+        "tau2": round(rep["tau"] ** 2, 6),
+        "by_treatment": {t: {k: round(v, 6) for k, v in d.items()}
+                         for t, d in rep["by_treatment"].items()},
+    }
+
+
 def assemble(net: dict) -> dict:
     rep = coverage.report(net)
     rec_name = rep["recommendation"]["recommended"]
@@ -21,6 +37,7 @@ def assemble(net: dict) -> dict:
     audit = selfaudit.cinema6_verdict(net, rec_pi)
 
     return {
+        "nma_estimator": _nma_estimator_block(net),
         "dataset": net["slug"],
         "estimand": net.get("primary_estimand"),
         "k": rep["k"],

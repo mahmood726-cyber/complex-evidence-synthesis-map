@@ -90,6 +90,8 @@
     </div>
   </div>
 
+  <h2>Estimator robustness (B2): model vs sandwich variance</h2><table><tr><th>treatment</th><th>effect</th><th>SE (model)</th><th>SE (sandwich)</th><th>ratio</th></tr><tr><td>DPP-4 inhibitor</td><td>-0.020</td><td>0.0873</td><td>0.0001</td><td>0.00</td></tr><tr><td>GLP-1 RA</td><td>+0.075</td><td>0.0608</td><td>0.0708</td><td>1.16</td></tr><tr><td>SGLT2 inhibitor</td><td>+0.117</td><td>0.0670</td><td>0.0369</td><td>0.55</td></tr></table><p class='sub'>core_ad NMA (shared-&tau; REML) effects reproduce the independent aact engine. The Lu/Ades composite-likelihood sandwich changes only the variance; ratios far from 1 (and the near-zero DPP-4 value, informed by just two studies) are the documented small-cluster under-coverage of robust variances &mdash; reported, not trusted blindly.</p>
+
   <h2>Specification multiverse (8 specs: FE/DL/PM/REML &times; Wald/HKSJ)</h2>
   <table>
     <tr><th>contrast</th><th>WL &theta;</th><th>weighted-likelihood CI</th><th></th>
