@@ -24,9 +24,11 @@ def test_grid_size_and_fe_zero_tau2(net):
     yi = [s.yi for s in studies]
     vi = [s.sei ** 2 for s in studies]
     grid = specs.grid_for_contrast(yi, vi)
-    assert len(grid) == 8  # 4 tau2 x 2 CI
+    assert len(grid) == 9  # 4 tau2 x 2 CI (additive) + 1 multiplicative
     fe = [s for s in grid if s["estimator"] == "FE"]
     assert all(s["tau2"] == 0.0 for s in fe)
+    mult = [s for s in grid if s["het_model"] == "multiplicative"]
+    assert len(mult) == 1 and mult[0]["phi"] >= 1.0
 
 
 def test_hksj_never_narrower_than_wald(net):
@@ -104,3 +106,10 @@ def test_phase2_matches_baseline(rep):
     assert ah["order"] == bh["order"]
     assert ah["poth"] == pytest.approx(bh["poth"], abs=1e-4)  # seeded MC -> deterministic
     assert ah["informative"] == bh["informative"]
+    # new extension axes
+    for t, choice in base["het_model_choice"].items():
+        assert rep["het_model_choice"][t]["choice"] == choice
+    pb = rep["pub_bias_robma"]
+    assert pb["k"] == base["pub_bias_robma"]["k"]
+    assert pb["underpowered"] == base["pub_bias_robma"]["underpowered"]
+    assert pb["model_averaged"]["significant"] == base["pub_bias_robma"]["model_averaged_significant"]

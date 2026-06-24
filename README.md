@@ -22,6 +22,7 @@ specification curve.
   - `multiverse.py` — per-contrast aggregation with `weighted_likelihood` (primary; **never IV-RE — C2**) vs `naive_ivre_pool` (the labelled cardinal sin) for contrast; treatment hierarchy under every spec.
   - `ranking.py` — SUCRA + probability-of-best + **POTH** (Wigle 2025), gating any "best treatment" claim on POTH ≥ 0.5 (**C5**).
   - **B1 parity CLOSED:** `validate_r.py` + `external/r/parity.R` — pooling backbone matches `metafor` to **7e-07** (R 4.6.0).
+  - **Extension axes:** `specs.py` adds a **multiplicative-NMA** model (Thompson–Sharp φ) as a forking-path axis with the **C4 ΔAIC≥2 switch rule** (`multiplicative_vs_additive`); `pubbias.py` adds a **RoBMA-style** publication-bias axis (raw / trim-fill / PET-PEESE) model-averaged by marginal-likelihood (AIC) weights — the portable analog of RoBMA's Bayesian model-averaging (RoBMA-in-R not installed; future cross-check). Findings: all contrasts AIC-indistinguishable additive-vs-multiplicative (GLP-1 φ≈7.6); pub-bias adjustment leaves the conclusion non-significant (PET-PEESE's sign flip down-weighted by poor fit).
 
 ### Worked results (aact NMA-MACE-in-T2D, k=10) — now **VERIFIED** (metafor parity passes)
 - **Coverage (P0-B):** real-data LOO all three PIs cover 0.90 (< nominal 0.95) — conformal earns nothing over standard/HKSJ; known-truth sim shows conformal conservative (0.967) vs standard/HKSJ under-covering (~0.92). No free lunch.

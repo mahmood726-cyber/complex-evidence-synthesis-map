@@ -12,7 +12,7 @@ active-vs-placebo contrasts. We then:
 from __future__ import annotations
 
 from phase1 import bootstrap, data_io
-from phase2 import ranking, specs
+from phase2 import pubbias, ranking, specs
 
 bootstrap.add_spec_collapse()
 from spec_collapse import aggregators as AGG  # noqa: E402  (reused aggregators)
@@ -70,6 +70,16 @@ def report(net: dict, n_mc: int = 20000, seed: int = 20260620) -> dict:
                               "poth": round(h["poth"], 4),
                               "informative": h["informative"]})
 
+    # NEW axis (C4): multiplicative-vs-additive AIC choice per contrast
+    het_choice = {t: specs.multiplicative_vs_additive(yi, vi)
+                  for t, (yi, vi) in inputs.items()}
+
+    # NEW axis (RoBMA-style): publication-bias model-averaging on the k=10
+    # network-level active-vs-placebo sample (per-contrast k is too small).
+    yi_net, vi_net = data_io.active_vs_placebo_sample(net)
+    vi_net = [s ** 2 for s in vi_net]
+    pub_bias = pubbias.robma_style(yi_net, vi_net)
+
     poths = [h["poth"] for h in per_spec_hier]
     # aggregated hierarchy from the weighted-likelihood per-contrast effects
     agg_effects = {ref: (0.0, 0.0)}
@@ -86,6 +96,8 @@ def report(net: dict, n_mc: int = 20000, seed: int = 20260620) -> dict:
         "best_treatment_distribution": best_counts,
         "poth_min": round(min(poths), 4),
         "poth_max": round(max(poths), 4),
+        "het_model_choice": het_choice,
+        "pub_bias_robma": pub_bias,
         "aggregated_hierarchy": {
             "order": agg_hier["reference_order"],
             "sucra": {k: round(v, 4) for k, v in agg_hier["sucra"].items()},
@@ -116,6 +128,21 @@ def main() -> int:
     print(f"  aggregated POTH = {ah['poth']}  -> hierarchy informative: {ah['informative']}")
     if not ah["informative"]:
         print("  => POTH < 0.5: hierarchy is NON-INFORMATIVE; do NOT claim a 'best' treatment (C5).")
+
+    print("\nMultiplicative-vs-additive axis (C4; switch only if dAIC >= 2):")
+    for t, h in rep["het_model_choice"].items():
+        print(f"  {t:18s} AIC add={h['aic_additive']:.2f} ({h['best_additive_estimator']}) "
+              f"mult={h['aic_multiplicative']:.2f} (phi={h['phi']}) "
+              f"dAIC={h['delta_aic_add_minus_mult']:+.2f} -> {h['choice']}")
+
+    pb = rep["pub_bias_robma"]
+    print(f"\nRoBMA-style pub-bias model-averaging (network k={pb['k']}, "
+          f"underpowered={pb['underpowered']}):")
+    for mdl in pb["models"]:
+        print(f"  {mdl['method']:10s} theta={mdl['theta']:+.3f}  AIC={mdl['aic']:.2f}  w={mdl['weight']}")
+    ma, rw = pb["model_averaged"], pb["raw"]
+    print(f"  model-averaged theta={ma['theta']:+.3f} [{ma['ci_low']:+.3f},{ma['ci_high']:+.3f}] "
+          f"sig={ma['significant']}  vs raw sig={rw['significant']}")
     print("\n" + json.dumps(rep["aggregated_hierarchy"], indent=2))
     return 0
 

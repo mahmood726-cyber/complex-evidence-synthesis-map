@@ -80,6 +80,35 @@ def _estimator_section(v) -> str:
         "the documented small-cluster under-coverage of robust variances &mdash; reported, not trusted blindly.</p>")
 
 
+def _axes_section(m) -> str:
+    het = m.get("het_model_choice") or {}
+    pb = m.get("pub_bias_robma") or {}
+    het_rows = "".join(
+        f"<tr><td>{_esc(t)}</td><td>{h['phi']}</td>"
+        f"<td>{h['delta_aic_add_minus_mult']:+.2f}</td><td>{_esc(h['choice'])}</td></tr>"
+        for t, h in het.items())
+    pb_rows = "".join(
+        f"<tr><td>{_esc(mdl['method'])}</td><td>{mdl['theta']:+.3f}</td>"
+        f"<td>{mdl['aic']:.2f}</td><td>{mdl['weight']}</td></tr>"
+        for mdl in pb.get("models", []))
+    ma = pb.get("model_averaged", {})
+    return (
+        "<h2>Extension axes: multiplicative-NMA (C4) &amp; RoBMA-style pub-bias</h2>"
+        "<div class='grid'><div>"
+        "<table><tr><th>contrast</th><th>&phi;</th><th>&Delta;AIC</th><th>C4 choice</th></tr>"
+        + het_rows + "</table>"
+        "<p class='sub'>Additive-vs-multiplicative &tau; as a forking-path axis; switch only "
+        "when &Delta;AIC&nbsp;&ge;&nbsp;2. All contrasts indistinguishable here (small k), "
+        "though GLP-1 shows strong multiplicative overdispersion (&phi;&asymp;7.6).</p></div><div>"
+        "<table><tr><th>pub-bias model</th><th>&theta;</th><th>AIC</th><th>weight</th></tr>"
+        + pb_rows + "</table>"
+        f"<p class='sub'>Portable RoBMA analog: model-averaged by marginal-likelihood (AIC) "
+        f"weights. Model-averaged &theta;={ma.get('theta')} significant="
+        f"{str(ma.get('significant')).lower()}; PET-PEESE's sign flip is down-weighted by poor "
+        f"fit. k={pb.get('k')} is below the k&ge;10 power threshold &mdash; sensitivity only.</p>"
+        "</div></div>")
+
+
 def build() -> str:
     net = data_io.load_network()
     v = verdict.assemble(net)
@@ -183,7 +212,7 @@ def build() -> str:
 
   {_estimator_section(v)}
 
-  <h2>Specification multiverse ({m['n_network_specs']} specs: FE/DL/PM/REML &times; Wald/HKSJ)</h2>
+  <h2>Specification multiverse ({m['n_network_specs']} specs: FE/DL/PM/REML &times; Wald/HKSJ + multiplicative)</h2>
   <table>
     <tr><th>contrast</th><th>WL &theta;</th><th>weighted-likelihood CI</th><th></th>
         <th>IV-RE CI</th><th></th></tr>
@@ -192,6 +221,8 @@ def build() -> str:
   <p class="sub">Highlighted rows flip from IV-RE &ldquo;robust&rdquo; to weighted-likelihood
   &ldquo;fragile&rdquo; &mdash; the false-robustness that single-spec IV pooling manufactures.
   Aggregated hierarchy: {order} &middot; POTH {agg['poth']} ({'informative' if agg['informative'] else 'non-informative'}).</p>
+
+  {_axes_section(m)}
 
   <footer>
     Generated from the verified pipeline (not hand-edited). Anchors: self-auditing/TruthCert,

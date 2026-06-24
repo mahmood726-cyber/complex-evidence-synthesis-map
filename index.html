@@ -51,7 +51,7 @@
     <strong>Headline (honest):</strong> naive inverse-variance pooling calls two of three
     active-vs-placebo contrasts <em>robust</em>; the correct weighted-likelihood combiner calls
     <strong>all three fragile</strong> (IV-RE narrows the interval ~6&times;). The leading drug tops
-    the order in every specification, yet aggregated <strong>POTH = 0.2097</strong> &lt; 0.5
+    the order in every specification, yet aggregated <strong>POTH = 0.2087</strong> &lt; 0.5
     &mdash; the hierarchy is <strong>non-informative</strong>. No &ldquo;best treatment&rdquo; claim is warranted.
   </div>
 
@@ -92,17 +92,19 @@
 
   <h2>Estimator robustness (B2): model vs sandwich variance</h2><table><tr><th>treatment</th><th>effect</th><th>SE (model)</th><th>SE (sandwich)</th><th>ratio</th></tr><tr><td>DPP-4 inhibitor</td><td>-0.020</td><td>0.0873</td><td>0.0001</td><td>0.00</td></tr><tr><td>GLP-1 RA</td><td>+0.075</td><td>0.0608</td><td>0.0708</td><td>1.16</td></tr><tr><td>SGLT2 inhibitor</td><td>+0.117</td><td>0.0670</td><td>0.0369</td><td>0.55</td></tr></table><p class='sub'>core_ad NMA (shared-&tau; REML) effects reproduce the independent aact engine. The Lu/Ades composite-likelihood sandwich changes only the variance; ratios far from 1 (and the near-zero DPP-4 value, informed by just two studies) are the documented small-cluster under-coverage of robust variances &mdash; reported, not trusted blindly.</p>
 
-  <h2>Specification multiverse (8 specs: FE/DL/PM/REML &times; Wald/HKSJ)</h2>
+  <h2>Specification multiverse (9 specs: FE/DL/PM/REML &times; Wald/HKSJ + multiplicative)</h2>
   <table>
     <tr><th>contrast</th><th>WL &theta;</th><th>weighted-likelihood CI</th><th></th>
         <th>IV-RE CI</th><th></th></tr>
-    <tr class=''><td>DPP-4 inhibitor</td><td>-0.020</td><td>[-0.566, +0.526]</td><td>fragile</td><td>[-0.050, +0.010]</td><td>fragile</td></tr>
-<tr class='flip'><td>GLP-1 RA</td><td>+0.074</td><td>[-0.172, +0.323]</td><td>fragile</td><td>[+0.028, +0.110]</td><td>robust</td></tr>
-<tr class='flip'><td>SGLT2 inhibitor</td><td>+0.112</td><td>[-0.022, +0.247]</td><td>fragile</td><td>[+0.083, +0.141]</td><td>robust</td></tr>
+    <tr class=''><td>DPP-4 inhibitor</td><td>-0.020</td><td>[-0.566, +0.526]</td><td>fragile</td><td>[-0.048, +0.008]</td><td>fragile</td></tr>
+<tr class='flip'><td>GLP-1 RA</td><td>+0.073</td><td>[-0.174, +0.322]</td><td>fragile</td><td>[+0.030, +0.109]</td><td>robust</td></tr>
+<tr class='flip'><td>SGLT2 inhibitor</td><td>+0.112</td><td>[-0.022, +0.247]</td><td>fragile</td><td>[+0.084, +0.140]</td><td>robust</td></tr>
   </table>
   <p class="sub">Highlighted rows flip from IV-RE &ldquo;robust&rdquo; to weighted-likelihood
   &ldquo;fragile&rdquo; &mdash; the false-robustness that single-spec IV pooling manufactures.
-  Aggregated hierarchy: DPP-4 inhibitor &rsaquo; placebo &rsaquo; GLP-1 RA &rsaquo; SGLT2 inhibitor &middot; POTH 0.2097 (non-informative).</p>
+  Aggregated hierarchy: DPP-4 inhibitor &rsaquo; placebo &rsaquo; GLP-1 RA &rsaquo; SGLT2 inhibitor &middot; POTH 0.2087 (non-informative).</p>
+
+  <h2>Extension axes: multiplicative-NMA (C4) &amp; RoBMA-style pub-bias</h2><div class='grid'><div><table><tr><th>contrast</th><th>&phi;</th><th>&Delta;AIC</th><th>C4 choice</th></tr><tr><td>DPP-4 inhibitor</td><td>1.0</td><td>+0.00</td><td>indistinguishable</td></tr><tr><td>GLP-1 RA</td><td>7.621</td><td>+0.26</td><td>indistinguishable</td></tr><tr><td>SGLT2 inhibitor</td><td>1.128</td><td>-0.01</td><td>indistinguishable</td></tr></table><p class='sub'>Additive-vs-multiplicative &tau; as a forking-path axis; switch only when &Delta;AIC&nbsp;&ge;&nbsp;2. All contrasts indistinguishable here (small k), though GLP-1 shows strong multiplicative overdispersion (&phi;&asymp;7.6).</p></div><div><table><tr><th>pub-bias model</th><th>&theta;</th><th>AIC</th><th>weight</th></tr><tr><td>raw</td><td>+0.070</td><td>-10.66</td><td>0.5</td></tr><tr><td>trim_fill</td><td>+0.070</td><td>-10.66</td><td>0.5</td></tr><tr><td>pet_peese</td><td>-0.148</td><td>22.72</td><td>0.0</td></tr></table><p class='sub'>Portable RoBMA analog: model-averaged by marginal-likelihood (AIC) weights. Model-averaged &theta;=0.0696 significant=false; PET-PEESE's sign flip is down-weighted by poor fit. k=10 is below the k&ge;10 power threshold &mdash; sensitivity only.</p></div></div>
 
   <footer>
     Generated from the verified pipeline (not hand-edited). Anchors: self-auditing/TruthCert,

@@ -1,5 +1,5 @@
 {
-  "n_network_specs": 8,
+  "n_network_specs": 9,
   "per_contrast_verdicts": {
     "DPP-4 inhibitor": {
       "wl": "fragile",
@@ -18,7 +18,7 @@
     }
   },
   "best_treatment_distribution": {
-    "DPP-4 inhibitor": 8
+    "DPP-4 inhibitor": 9
   },
   "aggregated_hierarchy": {
     "order": [
@@ -27,7 +27,17 @@
       "GLP-1 RA",
       "SGLT2 inhibitor"
     ],
-    "poth": 0.2097,
+    "poth": 0.2087,
     "informative": false
+  },
+  "het_model_choice": {
+    "DPP-4 inhibitor": "indistinguishable",
+    "GLP-1 RA": "indistinguishable",
+    "SGLT2 inhibitor": "indistinguishable"
+  },
+  "pub_bias_robma": {
+    "k": 10,
+    "underpowered": false,
+    "model_averaged_significant": false
   }
 }
